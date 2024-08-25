@@ -1,63 +1,80 @@
 import React from "react";
-import { Image } from "react-native-web";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import AntDesing from '@expo/vector-icons/AntDesign';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-//SCREEN 
-import HomeScreen from './Screens/HomeScreen'; 
-import SettingScreen from './Screens/SettingScreen'; 
+// SCREENS
+import HomeScreen from './Screens/HomeScreen';
+import SettingScreen from './Screens/SettingScreen';
+import LoginScreen from './Screens/LoginScreen';
+import RegistroScreen from './Screens/RegistroScreen';
+import DetallesScreen from './Screens/DetalleScreen';
 import StackScreen from './Screens/StackScreen';
 
-const HomeStackNavigator = createNativeStackNavigator(); 
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function MyStack(){
-    return(
-        <HomeStackNavigator.Navigator initialRouteName="HomeScreen">
-            <Image source={require('./img/Logo.jpg')} />
-            <HomeStackNavigator.Screen  name="SENA" component={HomeScreen}/>  
-            <HomeStackNavigator.Screen name="Stack" component={StackScreen}/>
-        </HomeStackNavigator.Navigator>
-    )
-}
-//donde puse pti va HomeScreen
-const Tab = createBottomTabNavigator(); 
-
-function MyTabs(){
-    return(
-        <Tab.Navigator initialRouteName="Home" screenOptions={{
-            tabBarActiveTinitColor: "red"
-        }}>
-            <Tab.Screen name="home" component={MyStack}
-                options={{tabBarLabel: "home",
-                    tabBarIcon:({color, size}) => (
-                        <AntDesing name="home" size={24}
-                        color={'Black'}/>
-                    ),
-                    tabBarBadge: 3, 
-                    headerShown: false
-                }}
-            />
-            <Tab.Screen name="Settings" component={SettingScreen}
-            options={{
-                tabBarLabel:"Settings",
-                tabBarIcon:({color,size}) => (
-                    <AntDesing name="setting" size={24}
-                    color={'Black'}/>
-                ),
-                tabBarBadge: 3, 
-                headerShown: false
-            }}
-            />
-        </Tab.Navigator>
-    )
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Registro" component={RegistroScreen} />
+    </Stack.Navigator>
+  );
 }
 
-export default function Navigation(){
-    return(
-        <NavigationContainer>
-            <MyTabs/>
-        </NavigationContainer>
-    )
+function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Detalles" component={DetallesScreen} />
+      <Stack.Screen name="Stack" component={StackScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: "red",
+        tabBarInactiveTintColor: "gray",
+      }}
+    >
+      <Tab.Screen 
+        name="Home" 
+        component={HomeStack}
+        options={{
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="home" size={24} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen 
+        name="Settings" 
+        component={SettingScreen}
+        options={{
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="setting" size={24} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+export default function Navigation() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Auth" component={AuthStack} />
+        <Stack.Screen name="Main" component={MainTabs} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
